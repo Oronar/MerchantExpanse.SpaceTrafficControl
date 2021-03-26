@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantExpanse.SpaceTrafficControl", "MerchantExpanse.SpaceTrafficControl\MerchantExpanse.SpaceTrafficControl.csproj", "{1970E07C-2297-4C54-B9AE-D5B215760ECB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantExpanse.SpaceTrafficControl", "MerchantExpanse.SpaceTrafficControl\MerchantExpanse.SpaceTrafficControl.csproj", "{1970E07C-2297-4C54-B9AE-D5B215760ECB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantExpanse.SpaceTrafficControl.Api", "MerchantExpanse.SpaceTrafficControl.Api\MerchantExpanse.SpaceTrafficControl.Api.csproj", "{40F173B9-116E-4BF9-8594-356885D205B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantExpanse.SpaceTrafficControl.ViewModels", "MerchantExpanse.SpaceTrafficControl.ViewModels\MerchantExpanse.SpaceTrafficControl.ViewModels.csproj", "{16B643B9-D438-43D5-B6A4-4D7A95294D5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{1970E07C-2297-4C54-B9AE-D5B215760ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1970E07C-2297-4C54-B9AE-D5B215760ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1970E07C-2297-4C54-B9AE-D5B215760ECB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40F173B9-116E-4BF9-8594-356885D205B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40F173B9-116E-4BF9-8594-356885D205B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40F173B9-116E-4BF9-8594-356885D205B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40F173B9-116E-4BF9-8594-356885D205B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B643B9-D438-43D5-B6A4-4D7A95294D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16B643B9-D438-43D5-B6A4-4D7A95294D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16B643B9-D438-43D5-B6A4-4D7A95294D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B643B9-D438-43D5-B6A4-4D7A95294D5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
