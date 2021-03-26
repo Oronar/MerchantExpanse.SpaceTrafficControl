@@ -1,0 +1,219 @@
+﻿@page "/traffic"
+@inject HttpClient Http
+@using MerchantExpanse.SpaceTraders.Models;
+@using Newtonsoft.Json;
+<h1 class="center">Space Traffic</h1>
+
+@if (Arrivals == null || Departures == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<div>
+    <div class="row align-items-center">
+        <div class="stat-block col-md-2">
+            <table class="table table-dark table-sm table-striped">
+                <caption>Location Data</caption>
+                <tbody>
+                    <tr>
+                        <th>Symbol</th>
+                        <td>@Location.Symbol</td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>@Location.Type</td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>@Location.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Position</td>
+                        <td>@Location.X, @Location.Y</td>
+                    </tr>
+                    <tr>
+                        <td>Docked Ships</td>
+                        <td>@Location.DockedShips</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="stat-block col-md-2">
+            <table class="table table-dark table-sm table-striped">
+                <caption>Top Usernames</caption>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th># of Ships</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var count in CalculateUserShips(Arrivals.Union(Departures)))
+                    {
+                        <tr>
+                            <td>@count.Username</td>
+                            <td>@count.ShipCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="stat-block col-md-2">
+            <table class="table table-dark table-sm table-striped">
+                <caption>Top Ship Types</caption>
+                <thead>
+                    <tr>
+                        <th>Ship Type</th>
+                        <th># of Ships</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var count in CalculateShipTypes(Arrivals.Union(Departures)))
+                    {
+                        <tr>
+                            <td>@count.ShipType</td>
+                            <td>@count.Count</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Arrivals (@Arrivals.Count() Flight Plans)</h3>
+            <table class="table table-dark table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>From</th>
+                        <th>Ship ID</th>
+                        <th>Username</th>
+                        <th>Ship Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var flightPlan in Arrivals.Take(10))
+                    {
+                        <tr>
+                            <td>@CalculateETA(flightPlan)</td>
+                            <td>@flightPlan.From</td>
+                            <td>@flightPlan.ShipId</td>
+                            <td>@flightPlan.Username</td>
+                            <td>@flightPlan.ShipType</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Departures (@Departures.Count() Flight Plans)</h3>
+            <table class="table table-dark table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>To</th>
+                        <th>Ship ID</th>
+                        <th>Username</th>
+                        <th>Ship Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var flightPlan in Departures.Take(10))
+                    {
+                        <tr>
+                            <td>@CalculateETA(flightPlan)</td>
+                            <td>@flightPlan.To</td>
+                            <td>@flightPlan.ShipId</td>
+                            <td>@flightPlan.Username</td>
+                            <td>@flightPlan.ShipType</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    
+</div>   
+}
+
+
+
+@code {
+    private IEnumerable<PublicFlightPlan> Arrivals;
+    private IEnumerable<PublicFlightPlan> Departures;
+    private LocationDetail Location;
+    private const int TopUsers = 5;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var content = await Http.GetStringAsync("sample-data/space-control.json");
+        var spaceControl = JsonConvert.DeserializeObject<SpaceControlViewModel>(content);
+        Location = spaceControl.Location;
+        Arrivals = spaceControl.Arrivals;
+        Departures = spaceControl.Departures;
+
+        _ = Timer();
+    }
+
+    public string CalculateETA(PublicFlightPlan flightPlan)
+    {
+        var timeSpan = flightPlan.ArrivesAt - DateTime.UtcNow;
+        var eta = Convert.ToInt32(timeSpan.TotalSeconds);
+
+        return eta >= 0 ? eta.ToString() : "ARRIVED";
+    }
+
+    public IEnumerable<UserShipCount> CalculateUserShips(IEnumerable<PublicFlightPlan> flightPlans)
+    {
+        return flightPlans.GroupBy(flightPlan => flightPlan.Username)
+            .Select(flightPlan => new UserShipCount()
+            {
+                Username = flightPlan.First().Username,
+                ShipCount = flightPlan.Count()
+            })
+            .OrderByDescending(x => x.ShipCount)
+            .Take(TopUsers);
+    }
+
+    public IEnumerable<ShipTypeCount> CalculateShipTypes(IEnumerable<PublicFlightPlan> flightPlans)
+    {
+        return flightPlans.GroupBy(flightPlan => flightPlan.ShipType)
+            .Select(flightPlan => new ShipTypeCount()
+            {
+                ShipType = flightPlan.First().ShipType,
+                Count = flightPlan.Count()
+            })
+            .OrderByDescending(x => x.Count);
+    }
+
+    private async Task Timer()
+    {
+        while (true)
+        {
+            await Task.Delay(1000);
+            StateHasChanged();
+        }
+    }
+
+    public class SpaceControlViewModel
+    {
+        public IEnumerable<PublicFlightPlan> Arrivals { get; set; }
+        public IEnumerable<PublicFlightPlan> Departures { get; set; }
+        public LocationDetail Location { get; set; }
+    }
+
+    public class UserShipCount
+    {
+        public string Username { get; set; }
+        public int ShipCount { get; set; }
+    }
+
+    public class ShipTypeCount
+    {
+        public string ShipType { get; set; }
+        public int Count { get; set; }
+    }
+}
