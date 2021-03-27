@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
 
 namespace MerchantExpanse.SpaceTrafficControl.Api
 {
@@ -33,7 +34,7 @@ namespace MerchantExpanse.SpaceTrafficControl.Api
 			{
 				options.AddDefaultPolicy(builder =>
 				{
-					builder.AllowAnyOrigin()
+					builder.WithOrigins(Configuration.GetSection("AllowedOrigins").Get<string[]>())
 						.AllowAnyMethod()
 						.AllowAnyHeader();
 				});
