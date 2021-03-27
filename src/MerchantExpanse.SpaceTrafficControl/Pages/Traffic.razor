@@ -8,10 +8,18 @@
 
 <h1 class="text-center">Space Traffic Contraaol - @LocationSymbol</h1>
 
-
 @if (Arrivals == null || Departures == null)
 {
-    <p><em>Connecting via ansible...</em></p>
+    <p>
+        <em>
+            Connecting via ansible...
+            @if(Error != null)
+            {
+                <br />
+                @Error
+            }
+        </em>
+    </p>
 }
 else
 {
@@ -151,6 +159,7 @@ else
     private IEnumerable<UserShipCount> TopUsers;
     private IEnumerable<ShipTypeCount> TopShips;
     private LocationDetail Location;
+    private string Error;
 
     private const int TopUsersAmount = 5;
     private const int TopShipAmount = 5;
@@ -211,11 +220,20 @@ else
 
     private async Task FetchTrafficData()
     {
-        var spaceControl = await Http.GetFromJsonAsync<SpaceTrafficViewModel>($"{Configuration["MerchantExpanse:Api"]}/space-traffic/{LocationSymbol}");
-        Location = spaceControl.Location;
-        Arrivals = spaceControl.Arrivals;
-        Departures = spaceControl.Departures;
-        TopShips = spaceControl.TopShips;
-        TopUsers = spaceControl.TopUsers;
+        try
+        {
+            var spaceControl = await Http.GetFromJsonAsync<SpaceTrafficViewModel>($"{Configuration["MerchantExpanse:Api"]}/space-traffic/{LocationSymbol}");
+            Location = spaceControl.Location;
+            Arrivals = spaceControl.Arrivals;
+            Departures = spaceControl.Departures;
+            TopShips = spaceControl.TopShips;
+            TopUsers = spaceControl.TopUsers;
+
+            Error = null;
+        }
+        catch
+        {
+            Error = $"Unable to retrieve data for location {LocationSymbol}";
+        }
     }
 }
