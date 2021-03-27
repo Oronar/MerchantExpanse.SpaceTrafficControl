@@ -1,0 +1,30 @@
+name: Publish Docker image
+on:
+  push:
+    branches:
+      - master
+jobs:
+  push_to_registry:
+    name: Push Docker image to GitHub Packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push Blazor to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: src/MerchantExpanse.SpaceTrafficControl/Dockerfile
+          registry: docker.pkg.github.com
+          repository: Oronar/merchantexpanse-spacetrafficcontrol/web
+          tag_with_ref: true
+      - name: Push API to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: src/MerchantExpanse.SpaceTrafficControl.Api/Dockerfile
+          registry: docker.pkg.github.com
+          repository: Oronar/merchantexpanse-spacetrafficcontrol/api
+          tag_with_ref: true
