@@ -1,5 +1,7 @@
 ﻿@page "/traffic/{LocationSymbol}"
 @inject HttpClient Http
+@inject IConfiguration Configuration
+@using Microsoft.Extensions.Configuration
 @using Newtonsoft.Json;
 @using MerchantExpanse.SpaceTrafficControl.ViewModels;
 @using MerchantExpanse.SpaceTraders.Models;
@@ -207,7 +209,7 @@ else
 
     private async Task FetchTrafficData()
     {
-        var content = await Http.GetStringAsync($"http://localhost:5000/space-traffic/{LocationSymbol}");
+        var content = await Http.GetStringAsync($"{Configuration["MerchantExpanse:Api"]}/space-traffic/{LocationSymbol}");
         var spaceControl = JsonConvert.DeserializeObject<SpaceTrafficViewModel>(content);
         Location = spaceControl.Location;
         Arrivals = spaceControl.Arrivals;
