@@ -1,5 +1,6 @@
 using MerchantExpanse.SpaceTraders.Contracts;
 using MerchantExpanse.SpaceTraders.Factories;
+using MerchantExpanse.SpaceTrafficControl.Api.Configurations;
 using MerchantExpanse.SpaceTrafficControl.Api.Services;
 using MerchantExpanse.SpaceTrafficControl.Api.Services.Contracts;
 using Microsoft.AspNetCore.Builder;
@@ -25,10 +26,9 @@ namespace MerchantExpanse.SpaceTrafficControl.Api
 			services.AddControllers();
 			services.AddTransient<ISpaceTrafficService, SpaceTrafficService>();
 
-			var merchantExpanseUser = Configuration.GetValue<string>("MerchantExpanse:Username");
-			var merchantExpanseToken = Configuration.GetValue<string>("MerchantExpanse:ApiToken");
+			var merchantExpanseConfig = Configuration.GetSection("MerchantExpanse").Get<MerchantExpanseConfig>();
 
-			services.AddSingleton<IClient>(ClientFactory.Initialize(merchantExpanseToken, merchantExpanseUser));
+			services.AddSingleton<IClient>(ClientFactory.Initialize(merchantExpanseConfig.ApiToken, merchantExpanseConfig.Username));
 
 			services.AddCors(options =>
 			{
