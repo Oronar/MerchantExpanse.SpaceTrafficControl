@@ -8,23 +8,35 @@ jobs:
     name: Push Docker image to GitHub Packages
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
+      - 
+        name: Check out the repo
         uses: actions/checkout@v2
-      - name: Push Blazor to GitHub Packages
-        uses: docker/build-push-action@v1
+      - 
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          dockerfile: src/MerchantExpanse.SpaceTrafficControl/Dockerfile
-          registry: docker.pkg.github.com
-          repository: Oronar/merchantexpanse-spacetrafficcontrol/web
-          tag_with_ref: true
-      - name: Push API to GitHub Packages
-        uses: docker/build-push-action@v1
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      -
+        name: Build and push blazor
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          dockerfile: src/MerchantExpanse.SpaceTrafficControl.Api/Dockerfile
-          registry: docker.pkg.github.com
-          repository: Oronar/merchantexpanse-spacetrafficcontrol/api
-          tag_with_ref: true
+          context: ./src/MerchantExpanse.SpaceTrafficControl/Dockerfile
+          push: true
+          tags: |
+            Oronar/merchantexpanse-stc-web:latest
+      -
+        name: Build and push api
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/MerchantExpanse.SpaceTrafficControl.Api/Dockerfile
+          push: true
+          tags: |
+            Oronar/merchantexpanse-stc-api:latest
