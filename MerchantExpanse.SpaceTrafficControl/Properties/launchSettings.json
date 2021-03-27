@@ -19,7 +19,7 @@
     "MerchantExpanse.SpaceTrafficControl": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5001/traffic/OE-XV-91-2",
+      "launchUrl": "http://localhost:5001/traffic/OE-PM-TR",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

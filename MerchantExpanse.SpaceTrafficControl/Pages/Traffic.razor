@@ -50,7 +50,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var count in TopUsers)
+                        @foreach (var count in TopUsers.Take(TopUsersAmount))
                         {
                             <tr>
                                 <td>@count.Username</td>
@@ -70,7 +70,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var count in TopShips)
+                        @foreach (var count in TopShips.Take(TopShipAmount))
                         {
                             <tr>
                                 <td>@count.ShipType</td>
@@ -83,7 +83,7 @@ else
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h3>Arrivals (@Arrivals.Count() Flight Plans)</h3>
+                <h3>Arrivals (@TopArrivals.Count() Flight Plans)</h3>
                 <table class="table table-dark table-striped table-sm">
                     <thead>
                         <tr>
@@ -95,7 +95,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var flightPlan in Arrivals.Take(10))
+                        @foreach (var flightPlan in TopArrivals.Take(FlightPlansAmount))
                         {
                             <tr>
                                 <td>@CalculateETA(flightPlan)</td>
@@ -109,7 +109,7 @@ else
                 </table>
             </div>
             <div class="col-md-6">
-                <h3>Departures (@Departures.Count() Flight Plans)</h3>
+                <h3>Departures (@TopDepartures.Count() Flight Plans)</h3>
                 <table class="table table-dark table-striped table-sm">
                     <thead>
                         <tr>
@@ -121,7 +121,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var flightPlan in Departures.Take(10))
+                        @foreach (var flightPlan in TopDepartures.Take(FlightPlansAmount))
                         {
                             <tr>
                                 <td>@CalculateETA(flightPlan)</td>
@@ -147,19 +147,35 @@ else
     private IEnumerable<UserShipCount> TopUsers;
     private IEnumerable<ShipTypeCount> TopShips;
     private LocationDetail Location;
+
     private const int TopUsersAmount = 5;
+    private const int TopShipAmount = 5;
+    private const int ArrivedDisplayDelay = 20;
+    private const int FlightPlansAmount = 10;
+    private const int FetchDataInterval = 5 * 60 * 1000;
+
+    private IEnumerable<PublicFlightPlan> TopArrivals
+    {
+        get
+        {
+            return Arrivals.Where(a => DateTime.UtcNow <= a.ArrivesAt.AddSeconds(ArrivedDisplayDelay));
+        }
+    }
+
+    private IEnumerable<PublicFlightPlan> TopDepartures
+    {
+        get
+        {
+            return Departures.Where(a => DateTime.UtcNow <= a.ArrivesAt.AddSeconds(ArrivedDisplayDelay));
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        var content = await Http.GetStringAsync($"http://localhost:5000/space-traffic/{LocationSymbol}");
-        var spaceControl = JsonConvert.DeserializeObject<SpaceTrafficViewModel>(content);
-        Location = spaceControl.Location;
-        Arrivals = spaceControl.Arrivals;
-        Departures = spaceControl.Departures;
-        TopShips = spaceControl.TopShips;
-        TopUsers = spaceControl.TopUsers;
+        await FetchTrafficData();
 
-        _ = Timer();
+        _ = UpdateTimes();
+        _ = UpdateTrafficData();
     }
 
     public string CalculateETA(PublicFlightPlan flightPlan)
@@ -170,12 +186,33 @@ else
         return eta >= 0 ? eta.ToString() : "ARRIVED";
     }
 
-    private async Task Timer()
+    private async Task UpdateTimes()
     {
         while (true)
         {
             await Task.Delay(1000);
             StateHasChanged();
         }
+    }
+
+    private async Task UpdateTrafficData()
+    {
+        while (true)
+        {
+            await Task.Delay(FetchDataInterval);
+            await FetchTrafficData();
+            StateHasChanged();
+        }
+    }
+
+    private async Task FetchTrafficData()
+    {
+        var content = await Http.GetStringAsync($"http://localhost:5000/space-traffic/{LocationSymbol}");
+        var spaceControl = JsonConvert.DeserializeObject<SpaceTrafficViewModel>(content);
+        Location = spaceControl.Location;
+        Arrivals = spaceControl.Arrivals;
+        Departures = spaceControl.Departures;
+        TopShips = spaceControl.TopShips;
+        TopUsers = spaceControl.TopUsers;
     }
 }
