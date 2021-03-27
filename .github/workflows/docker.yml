@@ -1,11 +1,11 @@
-name: Publish Docker image
+name: Publish Docker images
 on:
   push:
     branches:
       - master
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages
+    name: Push Docker images to GitHub Packages
     runs-on: ubuntu-latest
     steps:
       - 
@@ -32,7 +32,7 @@ jobs:
           file: src/MerchantExpanse.SpaceTrafficControl/Dockerfile
           push: true
           tags: |
-            Oronar/merchantexpanse-stc-web:latest
+            oronar/merchantexpanse-stc-web:latest
       -
         name: Build and push api
         uses: docker/build-push-action@v2
@@ -41,4 +41,4 @@ jobs:
           file: src/MerchantExpanse.SpaceTrafficControl.Api/Dockerfile
           push: true
           tags: |
-            Oronar/merchantexpanse-stc-api:latest
+            oronar/merchantexpanse-stc-api:latest
