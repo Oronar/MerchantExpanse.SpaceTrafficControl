@@ -32,7 +32,7 @@ jobs:
           file: src/MerchantExpanse.SpaceTrafficControl/Dockerfile
           push: true
           tags: |
-            oronar/merchantexpanse-stc-web:latest
+            oronar/merchantexpanse.spacetrafficcontrol/web:latest
       -
         name: Build and push api
         uses: docker/build-push-action@v2
@@ -41,4 +41,4 @@ jobs:
           file: src/MerchantExpanse.SpaceTrafficControl.Api/Dockerfile
           push: true
           tags: |
-            oronar/merchantexpanse-stc-api:latest
+            oronar/merchantexpanse.spacetrafficcontrol/api:latest
