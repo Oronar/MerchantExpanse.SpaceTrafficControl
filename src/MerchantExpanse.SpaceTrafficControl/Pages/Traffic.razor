@@ -209,8 +209,7 @@ else
 
     private async Task FetchTrafficData()
     {
-        var content = await Http.GetStringAsync($"{Configuration["MerchantExpanse:Api"]}/space-traffic/{LocationSymbol}");
-        var spaceControl = JsonConvert.DeserializeObject<SpaceTrafficViewModel>(content);
+        var spaceControl = await Http.GetFromJsonAsync<SpaceTrafficViewModel>($"{Configuration["MerchantExpanse:Api"]}/space-traffic/{LocationSymbol}");
         Location = spaceControl.Location;
         Arrivals = spaceControl.Arrivals;
         Departures = spaceControl.Departures;
