@@ -66,7 +66,7 @@ else
                         {
                             <tr>
                                 <td>@count.Username</td>
-                                <td>@count.ShipCount</td>
+                                <td>@count.Count</td>
                             </tr>
                         }
                     </tbody>
@@ -165,7 +165,7 @@ else
     private const int TopShipAmount = 5;
     private const int ArrivedDisplayDelay = 20;
     private const int FlightPlansAmount = 10;
-    private const int FetchDataInterval = 5 * 60 * 1000;
+    private const int FetchDataInterval = 1 * 60 * 1000;
 
     private IEnumerable<PublicFlightPlan> TopArrivals
     {

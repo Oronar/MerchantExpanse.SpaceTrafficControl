@@ -20,7 +20,7 @@ namespace MerchantExpanse.SpaceTrafficControl.ViewModels
 	{
 		public string Username { get; set; }
 
-		public int ShipCount { get; set; }
+		public int Count { get; set; }
 	}
 
 	public class ShipTypeCount

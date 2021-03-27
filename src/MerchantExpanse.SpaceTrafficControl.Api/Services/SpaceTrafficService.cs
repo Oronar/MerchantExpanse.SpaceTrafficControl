@@ -1,11 +1,9 @@
 ﻿using MerchantExpanse.SpaceTraders.Contracts;
-using MerchantExpanse.SpaceTraders.Models;
 using MerchantExpanse.SpaceTrafficControl.Api.Extensions;
 using MerchantExpanse.SpaceTrafficControl.Api.Services.Contracts;
 using MerchantExpanse.SpaceTrafficControl.ViewModels;
 using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,33 +42,11 @@ namespace MerchantExpanse.SpaceTrafficControl.Api.Services
 				Arrivals = arrivals,
 				Departures = departures,
 				Location = locationDetail,
-				TopShips = CalculateTopShipTypes(arrivals.Union(departures)),
-				TopUsers = CalculateTopUsers(arrivals.Union(departures))
+				TopShips = arrivals.Union(departures).TopShipTypes(),
+				TopUsers = arrivals.Union(departures).TopUsers()
 			};
 
 			return spaceTraffic;
-		}
-
-		private static IEnumerable<UserShipCount> CalculateTopUsers(IEnumerable<PublicFlightPlan> flightPlans)
-		{
-			return flightPlans.GroupBy(flightPlan => flightPlan.Username)
-				.Select(flightPlan => new UserShipCount()
-				{
-					Username = flightPlan.First().Username,
-					ShipCount = flightPlan.Count()
-				})
-				.OrderByDescending(x => x.ShipCount);
-		}
-
-		private static IEnumerable<ShipTypeCount> CalculateTopShipTypes(IEnumerable<PublicFlightPlan> flightPlans)
-		{
-			return flightPlans.GroupBy(flightPlan => flightPlan.ShipType)
-				.Select(flightPlan => new ShipTypeCount()
-				{
-					ShipType = flightPlan.First().ShipType,
-					Count = flightPlan.Count()
-				})
-				.OrderByDescending(x => x.Count);
 		}
 	}
 }
