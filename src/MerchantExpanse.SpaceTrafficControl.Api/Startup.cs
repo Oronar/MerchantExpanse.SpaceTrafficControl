@@ -25,9 +25,9 @@ namespace MerchantExpanse.SpaceTrafficControl.Api
 		{
 			services.AddControllers();
 			services.AddTransient<ISpaceTrafficService, SpaceTrafficService>();
+			services.AddMemoryCache();
 
 			var merchantExpanseConfig = Configuration.GetSection("MerchantExpanse").Get<MerchantExpanseConfig>();
-
 			services.AddSingleton<IClient>(ClientFactory.Initialize(merchantExpanseConfig.ApiToken, merchantExpanseConfig.Username));
 
 			services.AddCors(options =>

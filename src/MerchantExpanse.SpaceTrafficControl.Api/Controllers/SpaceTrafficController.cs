@@ -9,17 +9,17 @@ namespace MerchantExpanse.SpaceTrafficControl.Api.Controllers
 	[ApiController]
 	public class SpaceTrafficController : Controller
 	{
-		private readonly ISpaceTrafficService spaceTrafficService;
+		private readonly ISpaceTrafficService SpaceTrafficService;
 
 		public SpaceTrafficController(ISpaceTrafficService spaceTrafficService)
 		{
-			this.spaceTrafficService = spaceTrafficService;
+			SpaceTrafficService = spaceTrafficService;
 		}
 
 		[HttpGet("{symbol}")]
 		public async Task<SpaceTrafficViewModel> GetSpaceTraffic(string symbol)
 		{
-			return await spaceTrafficService.GetSpaceTrafficAsync(symbol);
+			return await SpaceTrafficService.GetSpaceTrafficAsync(symbol);
 		}
 	}
 }
