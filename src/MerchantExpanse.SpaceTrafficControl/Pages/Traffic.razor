@@ -148,56 +148,63 @@ else
             </div>
         </div>
         <h3>Structures</h3>
-        <div class="row">
-            @foreach (var structure in Location.Structures)
-            {
-                <div class="col-md-4">
+        @if (Location.Structures.Count() == 0)
+        {
+            <p>No structures at this location.</p>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var structure in Location.Structures)
+                {
+                    <div class="col-md-4">
 
-                    <div class="card bg-dark">
-                        <h5 class="card-header">
-                            @structure.Name (@structure.Id) @if (structure.Completed)
-                            {
-                                <img class="oi oi-check" aria-hidden="true" />
-                            }
-                            else
-                            {<img class="oi oi-x" aria-hidden="true" />}
-                        </h5>
-                        <div class="card-body">
-                            @foreach (var material in structure.Materials)
-                            {
-                                <div class="row my-3">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                @material.Good
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-success" role="progressbar"
-                                                         style="width: @($"{Math.Round(((double)material.Quantity / material.TargetQuantity) * 100)}%")"
-                                                         aria-valuenow="@material.Quantity"
-                                                         aria-valuemin="0"
-                                                         aria-valuemax="@material.TargetQuantity">
+                        <div class="card bg-dark">
+                            <h5 class="card-header">
+                                @structure.Name (@structure.Id) @if (structure.Completed)
+                                {
+                                    <img class="oi oi-check" aria-hidden="true" />
+                                }
+                                else
+                                {<img class="oi oi-x" aria-hidden="true" />}
+                            </h5>
+                            <div class="card-body">
+                                @foreach (var material in structure.Materials)
+                                {
+                                    <div class="row my-3">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @material.Good
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                             style="width: @($"{Math.Round(((double)material.Quantity / material.TargetQuantity) * 100)}%")"
+                                                             aria-valuenow="@material.Quantity"
+                                                             aria-valuemin="0"
+                                                             aria-valuemax="@material.TargetQuantity">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                @material.Quantity / @material.TargetQuantity
-                                            </div>
-                                            <div class="col">
-                                                @($"{Math.Round(((double)material.Quantity / material.TargetQuantity) * 100)}%")
+                                            <div class="row">
+                                                <div class="col">
+                                                    @material.Quantity / @material.TargetQuantity
+                                                </div>
+                                                <div class="col">
+                                                    @($"{Math.Round(((double)material.Quantity / material.TargetQuantity) * 100)}%")
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
+                }
+            </div>
+        }
     </div>
 }
 
