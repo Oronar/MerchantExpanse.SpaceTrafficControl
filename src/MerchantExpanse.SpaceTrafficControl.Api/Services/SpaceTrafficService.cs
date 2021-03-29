@@ -34,8 +34,8 @@ namespace MerchantExpanse.SpaceTrafficControl.Api.Services
 				return await Client.GetFlightPlansAsync(locationDetail.SystemSymbol());
 			});
 
-			var arrivals = flightPlans.Where(fp => fp.To.Equals(locationDetail.Symbol)).OrderBy(fp => fp.ArrivesAt);
-			var departures = flightPlans.Where(fp => fp.From.Equals(locationDetail.Symbol)).OrderBy(fp => fp.ArrivesAt);
+			var arrivals = flightPlans.Where(fp => fp.Destination.Equals(locationDetail.Symbol)).OrderBy(fp => fp.ArrivesAt);
+			var departures = flightPlans.Where(fp => fp.Departure.Equals(locationDetail.Symbol)).OrderBy(fp => fp.ArrivesAt);
 
 			var spaceTraffic = new SpaceTrafficViewModel()
 			{
